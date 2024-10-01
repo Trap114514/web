@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campaign Details</title>
+    <style>
+        /* Basic styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e9ecef; /* Light grey background */
+            display: flex;
+        }
+
+        header {
+            background-color: #6081a5; /* Dark grey background */
+            color: white;
+            padding: 20px;
+            text-align: center;
+            width: 100%; /* Full width */
+            position: fixed; /* Fixed positioning */
+            top: 0; /* Stick to top */
+            left: 0; /* Stick to left */
+            z-index: 1000; /* Ensure it's above other elements */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Header shadow */
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        /* Navigation bar */
+        nav {
+            width: 200px; /* Fixed width for sidebar */
+            background-color: #005f73; /* Sidebar background */
+            padding: 80px 20px 20px; /* Padding for sidebar */
+            position: fixed; /* Fixed positioning */
+            height: 100%; /* Full height */
+            overflow-y: auto; /* Enable vertical scrolling if needed */
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Sidebar shadow */
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* Vertical alignment */
+        }
+
+        nav ul li {
+            margin: 15px 0; /* Space between items */
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            display: block;
+            transition: background-color 0.3s ease;
+            border-radius: 5px; /* Rounded corners */
+        }
+
+        nav ul li a:hover {
+            background-color: #94d2bd; /* Hover effect */
+        }
+
+        /* Main content area */
+        .main-area {
+            margin-left: 220px; /* Margin for the sidebar */
+            padding: 20px;
+            padding-top: 80px; /* Adjust top padding to avoid overlap with header */
+            flex: 1;
+        }
+
+        /* Detail section */
+        section {
+            width: 100%; /* Full width for the detail section */
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: #fff; /* White background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #campaign-details p {
+            font-size: 1.2rem;
+            color: #3c9b9e;
+            margin: 10px 0;
+        }
+
+        /* Donate button styles */
+        button {
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #005f73; /* Darker blue on hover */
+        }
+
+        /* Error message */
+        .error {
+            color: red;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Responsive layout */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            section {
+                width: 90%;
+            }
+
+            #campaign-details p {
+                font-size: 1rem;
+            }
+
+            button {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1 id="campaign-title">Campaign Details</h1>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/search">Search Campaigns</a></li>
+    </ul>
+</nav>
+
+<div class="main-area">
+    <section id="campaign-details">
+        <!-- Campaign details will be loaded via JavaScript -->
+    </section>
+</div>
+
+<script>
+    // Load campaign details
+    window.onload = function() {
+        const pathArray = window.location.pathname.split('/');
+        const campaignId = pathArray[pathArray.length - 1];  // Get the last part of the path as the ID
+
+        fetch(`/api/fundraiser/${campaignId}`)
+            .then(response => response.json())
+            .then(data => {
+                const title = document.getElementById('campaign-title');
+                const details = document.getElementById('campaign-details');
+
+                if (data) {
+                    title.innerText = data.TITLE;
+                    details.innerHTML = `
+                        <p>Organizer: ${data.ORGANIZATION}</p>
+                        <p>Target Funding: ${data.TARGET_FUNDING} AUD</p>
+                        <p>Current Funding: ${data.CURRENT_FUNDING} AUD</p>
+                        <p>City: ${data.CITY}</p>
+                        <p>Category: ${data.CATEGORY_NAME}</p>
+                        <button onclick="donate()">Donate</button>
+                    `;
+                } else {
+                    details.innerHTML = '<p class="error">Campaign details not found.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading campaign details:', error);
+                document.getElementById('campaign-details').innerHTML = '<p class="error">Error loading campaign details.</p>';
+            });
+    }
+
+    // Donate button click
+    function donate() {
+        alert("This feature is under construction");
+    }
+</script>
+
+</body>
+</html>
