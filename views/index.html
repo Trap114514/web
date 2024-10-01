@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Charity Initiatives</title>
+    <style>
+        /* Basic styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e9ecef; /* Light grey background */
+            display: flex;
+        }
+
+        header {
+            background-color: #343a40; /* Dark grey background */
+            color: #ffffff; /* White text */
+            padding: 20px;
+            text-align: center;
+            width: 100%; /* Full width */
+            position: fixed; /* Fixed positioning */
+            top: 0; /* Stick to top */
+            left: 0; /* Stick to left */
+            z-index: 1000; /* Ensure it's above other elements */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Header shadow */
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+        }
+
+        /* Navigation bar */
+        nav {
+            width: 200px; /* Fixed width for sidebar */
+            background-color: #495057; /* Darker grey */
+            padding: 80px 20px 20px; /* Adjust top padding to avoid overlap with header */
+            position: fixed; /* Fixed positioning */
+            height: 100%; /* Full height */
+            overflow-y: auto; /* Enable vertical scrolling if needed */
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Sidebar shadow */
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* Vertical alignment */
+        }
+
+        nav ul li {
+            margin: 15px 0; /* Space between items */
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #ffffff; /* White text */
+            font-size: 1.1rem;
+            padding: 10px;
+            display: block;
+            transition: background-color 0.3s ease;
+            border-radius: 5px; /* Rounded corners */
+        }
+
+        nav ul li a:hover {
+            background-color: #adb5bd; /* Light grey on hover */
+        }
+
+        /* Main content area */
+        .main-area {
+            margin-left: 220px; /* Margin for the sidebar */
+            padding: 20px;
+            padding-top: 80px; /* Adjust top padding to avoid overlap with header */
+            flex: 2;
+            min-height: 100vh; /* Ensure it takes full height */
+        }
+
+        /* Non-profit organization information */
+        section#charity-info {
+            margin: 20px auto;
+            max-width: 1200px;
+            background-color: #ffffff; /* White background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow effect */
+            display: flex; /* Use flexbox for alignment */
+            align-items: center; /* Center items vertically */
+        }
+
+        section#charity-info img {
+            max-width: 300px; /* Limit image width */
+            border-radius: 10px; /* Rounded corners for image */
+            margin-right: 20px; /* Space between image and text */
+        }
+
+        section#charity-info h2 {
+            font-size: 2rem;
+            text-align: center;
+            color: #79aee3; /* Dark grey */
+        }
+
+        section#charity-info p {
+            font-size: 1.1rem;
+            color: #e1c74a; /* Dark grey for text */
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* Fundraising campaigns list */
+        section#campaigns-list {
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+
+        section h2 {
+            font-size: 2rem;
+            text-align: center;
+            color: #0f1112; /* Dark grey */
+            margin-bottom: 20px;
+        }
+
+        /* Fundraiser card style */
+        ul#campaigns {
+            list-style-type: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        ul#campaigns li {
+            background-color: #ffffff; /* White background */
+            border-radius: 0; /* 设置为0以减少圆润 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Card shadow */
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Hover effect */
+        ul#campaigns li:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Darker shadow on hover */
+        }
+
+        /* Title style */
+        ul#campaigns li h3 {
+            font-size: 1.5rem;
+            margin: 0;
+            color: #008CBA; /* Blue for titles */
+        }
+
+        /* Details */
+        ul#campaigns li p {
+            margin: 10px 0;
+            font-size: 1rem;
+            color: #f18e47; /* Dark grey for text */
+        }
+
+        /* View details button */
+        ul#campaigns li a {
+            text-decoration: none;
+            background-color: #008CBA; /* Blue background */
+            color: #ffffff; /* White text */
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        ul#campaigns li a:hover {
+            background-color: #005f73; /* Darker blue on hover */
+        }
+
+        /* Animation effect */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        ul#campaigns li {
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        ul#campaigns li:nth-child(odd) {
+            animation-delay: 0.2s;
+        }
+
+        ul#campaigns li:nth-child(even) {
+            animation-delay: 0.4s;
+        }
+
+        /* Contact section */
+        section#contact-info {
+            margin: 20px auto;
+            max-width: 1200px;
+            background-color: #ffffff; /* White background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow effect */
+            text-align: center;
+        }
+
+        section#contact-info h2 {
+            font-size: 2rem;
+            color: #343a40; /* Dark grey */
+        }
+
+        section#contact-info p {
+            font-size: 1.1rem;
+            color: #555; /* Dark grey for text */
+        }
+
+        /* Responsive layout */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            ul#campaigns {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            nav {
+                width: 100px; /* Decrease sidebar width on small screens */
+                padding-top: 60px; /* Adjust padding for mobile */
+            }
+
+            .main-area {
+                margin-left: 120px; /* Adjust margin accordingly */
+                padding-top: 60px; /* Adjust top padding for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Welcome to the Charity Platform</h1>
+    <p>Empower diverse global initiatives through your generous donations.</p>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/search">Discover Campaigns</a></li>
+    </ul>
+</nav>
+
+<div class="main-area">
+    <!-- Inspiring stories and introduction -->
+    <section id="charity-info">
+        <img src="img/img.png" alt="Inspiring Image" /> <!-- 图片插槽 -->
+        <div>
+            <h2>About Us</h2>
+            <p>We are a charitable organization committed to assisting individuals in need across the globe. Through our platform, we have supported thousands of initiatives, ranging from educational projects for children to healthcare assistance.</p>
+            <p>One notable story occurred last year when a young man named Jackson lost his home due to flooding. Thanks to the generosity of donors on our platform, he was able to rebuild his house, and his family remains eternally thankful for the support.</p>
+            <p>Another inspiring tale is about a mother named Mary who raised funds for her critically ill daughter. In less than a month, kind donors contributed enough for her daughter to undergo emergency surgery, saving her life.</p>
+            <p>Every donation brings hope and change. These narratives motivate us to continue helping more individuals.</p>
+        </div>
+    </section>
+
+    <!-- Fundraisers list -->
+    <section id="campaigns-list">
+        <h2>Current Campaigns</h2>
+        <ul id="campaigns">
+            <!-- Campaigns will be loaded via JavaScript -->
+        </ul>
+    </section>
+
+    <!-- Contact section -->
+    <section id="contact-info">
+        <h2>Get in Touch</h2>
+        <p>If you have any inquiries or require assistance, don't hesitate to reach out.</p>
+        <p>Phone: +123232190</p>
+        <p>Email: 123123fd@hotmail.org</p>
+    </section>
+</div>
+
+<script>
+    // Load campaigns
+    window.onload = function() {
+        fetch('/api/fundraisers')
+            .then(response => response.json())
+            .then(data => {
+                const campaignsList = document.getElementById('campaigns');
+                data.forEach(campaign => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                            <h3>${campaign.TITLE}</h3>
+                            <p>Organizer: ${campaign.ORGANIZATION}</p>
+                            <p>Target Funding: ${campaign.TARGET_FUNDING} AUD</p>
+                            <p>Current Funding: ${campaign.CURRENT_FUNDING} AUD</p>
+                            <p>City: ${campaign.CITY}</p>
+                            <p>Category: ${campaign.CATEGORY_NAME}</p>
+                            <p><strong>Status:</strong> Ongoing</p>
+                            <a href="/fundraiser/${campaign.FUNDRAISER_ID}">View Details</a>
+                        `;
+                    campaignsList.appendChild(listItem);
+                });
+            });
+    }
+</script>
+
+</body>
+</html>
