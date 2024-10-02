@@ -1,156 +1,159 @@
+//Express,path and database-connection module
 const expressApp = require('express');
 const pathLib = require('path');
-const databaseConnection = require('./db'); // 引入 MySQL 数据库连接模块
-const expressServer = expressApp(); // 创建 Express 应用实例
+//MySQL database-connection module
+const databaseConnection = require('./db');
+//Create Express application 
+const expressServer = expressApp(); 
 
-// 配置静态文件目录
+//Configure static file catalog 
 const publicDirectory = pathLib.join(__dirname, 'public');
 expressServer.use(expressApp.static(publicDirectory));
 
-// 定义视图文件存放路径
+//Define the path of view files
 const viewsDirectory = pathLib.join(__dirname, 'views');
 
-// 错误处理函数，接收响应对象和错误信息
+//Function of operating the error,receiving the reponsible objects and error message 
 const respondWithError = (response, error) => {
-    console.error(error); // 在控制台输出错误信息
-    response.status(500).json({ error: error.message }); // 返回 500 状态和错误信息
+    console.error(error);//Output the error information on the console
+    response.status(500).json({ error: error.message });//Return status-500 and error message 
 };
 
-// 发送 HTML 文件的函数，接受响应对象和文件名
+//Function of sending HTML file,receiving responsible objects and file names
 const sendHtmlFile = (response, fileName) => {
-    const fullFilePath = pathLib.join(viewsDirectory, fileName); // 生成完整的文件路径
-    response.sendFile(fullFilePath); // 发送 HTML 文件
+    const fullFilePath = pathLib.join(viewsDirectory, fileName);//Generate completed file path
+    response.sendFile(fullFilePath);//Send the HTML file
 };
 
-// 首页路由 - 当请求根路径时返回 index.html
+//Index router:return index.html when requesting the root path
 expressServer.get('/', (request, response) => sendHtmlFile(response, 'index.html'));
 
-// 搜索页面路由 - 返回 search.html
+//Search router:return search.html
 expressServer.get('/search', (request, response) => sendHtmlFile(response, 'search.html'));
 
-// 通用数据库查询函数
+//General function of querying database
 const queryDatabase = (sqlQuery, parameters) => {
     return new Promise((resolve, reject) => {
         databaseConnection.query(sqlQuery, parameters, (error, results) => {
-            if (error) return reject(error); // 如果有错误，拒绝 Promise
-            resolve(results); // 成功时解析结果
+            if (error) return reject(error); //Reject promise if there is error
+            resolve(results); //Analyze the result when success
         });
     });
 };
 
-// API：获取所有类别
+//API of obtaining all of the categories 
 expressServer.get('/api/categories', async (request, response) => {
-    const sqlForCategories = 'SELECT CATEGORY_ID, NAME FROM CATEGORY'; // 查询类别的 SQL
+    const sqlForCategories = 'SELECT CATEGORY_ID, NAME FROM CATEGORY';//Query the CATEGORY's SQL
     try {
-        const categoryResults = await queryDatabase(sqlForCategories, []); // 执行查询
-        response.json(categoryResults); // 返回类别结果
+        const categoryResults = await queryDatabase(sqlForCategories, []);//Operating the query
+        response.json(categoryResults);//Return the CATEGORY results
     } catch (error) {
-        respondWithError(response, error); // 错误处理
+        respondWithError(response, error);//Operating the error
     }
 });
 
-// API：获取所有组织者
+//API of obtaining all of the organizers
 expressServer.get('/api/organizers', async (request, response) => {
-    const sqlForOrganizers = 'SELECT DISTINCT ORGANIZATION FROM FUNDRAISER'; // 查询组织者的 SQL
+    const sqlForOrganizers = 'SELECT DISTINCT ORGANIZATION FROM FUNDRAISER';//Query the ORGANIZER's SQL 
     try {
-        const organizerResults = await queryDatabase(sqlForOrganizers, []); // 执行查询
-        response.json(organizerResults); // 返回组织者结果
+        const organizerResults = await queryDatabase(sqlForOrganizers, []);//Operating the query
+        response.json(organizerResults);//Returnn the ORGANIZER results
     } catch (error) {
-        respondWithError(response, error); // 错误处理
+        respondWithError(response, error);//Operating the error 
     }
 });
 
-// API：获取所有城市
+//API of obtaining all of the cities 
 expressServer.get('/api/cities', async (request, response) => {
-    const sqlForCities = 'SELECT DISTINCT CITY FROM FUNDRAISER'; // 查询城市的 SQL
+    const sqlForCities = 'SELECT DISTINCT CITY FROM FUNDRAISER';//Query the CITY's SQL
     try {
-        const cityResults = await queryDatabase(sqlForCities, []); // 执行查询
-        response.json(cityResults); // 返回城市结果
+        const cityResults = await queryDatabase(sqlForCities, []);//Operating the query 
+        response.json(cityResults);//Return the CITY results
     } catch (error) {
-        respondWithError(response, error); // 错误处理
+        respondWithError(response, error); //Operating the error
     }
 });
 
-// 筹款活动详情页面路由 - 返回 fundraiser.html
+//Fundraiser router:return fundraiser.html
 expressServer.get('/fundraiser/:id', (request, response) => sendHtmlFile(response, 'fundraiser.html'));
 
-// 获取所有正在进行的筹款活动
+//Function of obtaining all of the ongoing funding
 expressServer.get('/api/fundraisers', async (request, response) => {
     const sqlForFundraisers = `
         SELECT f.FUNDRAISER_ID, f.ORGANIZATION, f.TITLE, f.TARGET_FUNDING, f.CURRENT_FUNDING, f.CITY, f.EVENT_DATE, c.NAME AS CATEGORY_NAME 
         FROM FUNDRAISER f 
         JOIN CATEGORY c ON f.CATEGORY_ID = c.CATEGORY_ID
-        WHERE f.CURRENT_FUNDING < f.TARGET_FUNDING`; // 查询正在进行的筹款活动的 SQL
+        WHERE f.CURRENT_FUNDING < f.TARGET_FUNDING`; //Query the SQL
 
     try {
-        const fundraiserResults = await queryDatabase(sqlForFundraisers, []); // 执行查询
-        response.json(fundraiserResults); // 返回筹款活动结果
+        const fundraiserResults = await queryDatabase(sqlForFundraisers, []); //Operating the query 
+        response.json(fundraiserResults); //Return the results
     } catch (error) {
-        respondWithError(response, error); // 错误处理
+        respondWithError(response, error); //Operating the error
     }
 });
 
-// 搜索筹款活动
+//Function of searching the campaign
 expressServer.get('/api/search', async (request, response) => {
-    const { organizers, cities, categories } = request.query; // 解构查询参数
+    const { organizers, cities, categories } = request.query; //Deconstruct the query parameter
     let sqlSearchQuery = `
         SELECT f.FUNDRAISER_ID, f.ORGANIZATION, f.TITLE, f.TARGET_FUNDING, f.CURRENT_FUNDING, f.CITY, f.EVENT_DATE 
         FROM FUNDRAISER f 
-        WHERE 1=1`; // 初始化 SQL 查询
+        WHERE 1=1`;//Initialize the SQL query
 
-    const searchParams = []; // 查询参数数组
-    const whereConditions = []; // 条件数组
+    const searchParams = [];//Query the parameter array
+    const whereConditions = [];//Condition-array
 
-    // 处理选中的组织者
+    //Operate the chosen organizers 
     if (organizers) {
-        whereConditions.push('f.ORGANIZATION IN (?)'); // 添加条件
-        searchParams.push(organizers.split(',')); // 添加查询参数
+        whereConditions.push('f.ORGANIZATION IN (?)');//Add the conditions 
+        searchParams.push(organizers.split(','));//Add the query parameter
     }
 
-    // 处理选中的城市
+    //Operate the chosen cities
     if (cities) {
-        whereConditions.push('f.CITY IN (?)'); // 添加条件
-        searchParams.push(cities.split(',')); // 添加查询参数
+        whereConditions.push('f.CITY IN (?)');//Add the conditions 
+        searchParams.push(cities.split(','));//Add the query parameter
     }
 
-    // 处理选中的类别
+    //Operate the chosen categories 
     if (categories) {
-        whereConditions.push('f.CATEGORY_ID IN (?)'); // 添加条件
-        searchParams.push(categories.split(',')); // 添加查询参数
+        whereConditions.push('f.CATEGORY_ID IN (?)');//Add the conditions 
+        searchParams.push(categories.split(','));//Add the query parameter 
     }
 
-    // 将条件合并到查询中
+    //Merge the condition with query 
     if (whereConditions.length > 0) {
-        sqlSearchQuery += ' AND ' + whereConditions.join(' AND '); // 拼接条件
+        sqlSearchQuery += ' AND ' + whereConditions.join(' AND ');//Put the conditions together
     }
 
     try {
-        const searchResults = await queryDatabase(sqlSearchQuery, searchParams); // 执行查询
-        response.json(searchResults); // 返回搜索结果
+        const searchResults = await queryDatabase(sqlSearchQuery, searchParams);//Operate the query
+        response.json(searchResults);//Return the search results
     } catch (error) {
-        respondWithError(response, error); // 错误处理
+        respondWithError(response, error);//Operate the error 
     }
 });
 
-// 获取单个筹款活动详情
+//Obtain the single details of campaign 
 expressServer.get('/api/fundraiser/:id', async (request, response) => {
-    const fundraiserId = request.params.id; // 获取活动 ID
+    const fundraiserId = request.params.id;//Obtain the ID
     const sqlForSingleFundraiser = `
         SELECT f.FUNDRAISER_ID, f.ORGANIZATION, f.TITLE, f.TARGET_FUNDING, f.CURRENT_FUNDING, f.CITY, f.EVENT_DATE, c.NAME AS CATEGORY_NAME 
         FROM FUNDRAISER f 
         JOIN CATEGORY c ON f.CATEGORY_ID = c.CATEGORY_ID
-        WHERE f.FUNDRAISER_ID = ?`; // SQL 查询
+        WHERE f.FUNDRAISER_ID = ?`;//Query the SQL 
 
     try {
-        const singleFundraiserResults = await queryDatabase(sqlForSingleFundraiser, [fundraiserId]); // 执行查询
-        response.json(singleFundraiserResults[0]); // 返回第一个查询结果
+        const singleFundraiserResults = await queryDatabase(sqlForSingleFundraiser, [fundraiserId]);//Operate the query 
+        response.json(singleFundraiserResults[0]);//Return the first result
     } catch (error) {
-        respondWithError(response, error); // 错误处理
+        respondWithError(response, error); //Operate the error 
     }
 });
 
-// 服务器监听端口
-const PORT = 3000; // 定义端口号
+//Server listening port
+const PORT = 3001; //Define the port ID 
 expressServer.listen(PORT, () => {
-    console.log(`服务器运行在 http://localhost:${PORT}`); // 启动信息
+    console.log(`Server operate on http://localhost:${PORT}`); //Operate message
 });
