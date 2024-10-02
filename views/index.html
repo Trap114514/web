@@ -136,7 +136,7 @@
 
         ul#campaigns li {
             background-color: #ffffff; /* White background */
-            border-radius: 0; /* 设置为0以减少圆润 */
+            border-radius: 0; 
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Card shadow */
             padding: 20px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -263,7 +263,7 @@
 <div class="main-area">
     <!-- Inspiring stories and introduction -->
     <section id="charity-info">
-        <img src="img/img.png" alt="Inspiring Image" /> <!-- 图片插槽 -->
+        <img src="img/img.png" alt="Inspiring Image" /> <!-- Insert the pictures -->
         <div>
             <h2>About Us</h2>
             <p>We are a charitable organization committed to assisting individuals in need across the globe. Through our platform, we have supported thousands of initiatives, ranging from educational projects for children to healthcare assistance.</p>
@@ -296,6 +296,7 @@
         fetch('/api/fundraisers')
             .then(response => response.json())
             .then(data => {
+                //Operate the return data
                 const campaignsList = document.getElementById('campaigns');
                 data.forEach(campaign => {
                     const listItem = document.createElement('li');
@@ -308,7 +309,7 @@
                             <p>Category: ${campaign.CATEGORY_NAME}</p>
                             <p><strong>Status:</strong> Ongoing</p>
                             <a href="/fundraiser/${campaign.FUNDRAISER_ID}">View Details</a>
-                        `;
+                        `;//Switch to the detailed information
                     campaignsList.appendChild(listItem);
                 });
             });

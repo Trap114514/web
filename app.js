@@ -1,4 +1,4 @@
-//Express,path and database-connection module
+//Express,path and database-connection module(1)
 const expressApp = require('express');
 const pathLib = require('path');
 //MySQL database-connection module
@@ -6,14 +6,14 @@ const databaseConnection = require('./db');
 //Create Express application 
 const expressServer = expressApp(); 
 
-//Configure static file catalog 
+//Configure static file catalog(2) 
 const publicDirectory = pathLib.join(__dirname, 'public');
 expressServer.use(expressApp.static(publicDirectory));
 
 //Define the path of view files
 const viewsDirectory = pathLib.join(__dirname, 'views');
 
-//Function of operating the error,receiving the reponsible objects and error message 
+//Function of operating the error,receiving the reponsible objects and error message(3) 
 const respondWithError = (response, error) => {
     console.error(error);//Output the error information on the console
     response.status(500).json({ error: error.message });//Return status-500 and error message 
@@ -25,13 +25,13 @@ const sendHtmlFile = (response, fileName) => {
     response.sendFile(fullFilePath);//Send the HTML file
 };
 
-//Index router:return index.html when requesting the root path
+//Index router:return index.html when requesting the root path(4)
 expressServer.get('/', (request, response) => sendHtmlFile(response, 'index.html'));
 
 //Search router:return search.html
 expressServer.get('/search', (request, response) => sendHtmlFile(response, 'search.html'));
 
-//General function of querying database
+//General function of querying database(5)
 const queryDatabase = (sqlQuery, parameters) => {
     return new Promise((resolve, reject) => {
         databaseConnection.query(sqlQuery, parameters, (error, results) => {
@@ -93,7 +93,7 @@ expressServer.get('/api/fundraisers', async (request, response) => {
     }
 });
 
-//Function of searching the campaign
+//Function of searching the campaign(6)
 expressServer.get('/api/search', async (request, response) => {
     const { organizers, cities, categories } = request.query; //Deconstruct the query parameter
     let sqlSearchQuery = `
@@ -152,7 +152,7 @@ expressServer.get('/api/fundraiser/:id', async (request, response) => {
     }
 });
 
-//Server listening port
+//Server listening port(7)
 const PORT = 3001; //Define the port ID 
 expressServer.listen(PORT, () => {
     console.log(`Server operate on http://localhost:${PORT}`); //Operate message

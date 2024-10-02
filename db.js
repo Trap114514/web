@@ -1,29 +1,29 @@
 const mysql = require('mysql');
 
-// 创建数据库连接
+//Create the connection with database 
 const createConnection = () => {
     return mysql.createConnection({
         host: 'localhost',
-        user: 'root',  // MySQL 用户名
-        password: '123456',  // MySQL 密码
+        user: 'root',  //MySQL username
+        password: '123456',  // MySQL code
         database: 'crowdfunding_db'
     });
 };
 
-// 连接到数据库
+//Connect with database
 const connectToDatabase = (connection) => {
     connection.connect(err => {
         if (err) {
-            console.error('连接数据库失败: ', err.stack);
+            console.error('Fail to connect with database: ', err.stack);
         } else {
-            console.log('成功连接数据库');
+            console.log('Connect with database successfully');
         }
     });
 };
 
-// 主逻辑
+//Main logic
 const connection = createConnection();
 connectToDatabase(connection);
 
-// 导出连接
+//Export the connection
 module.exports = connection;
